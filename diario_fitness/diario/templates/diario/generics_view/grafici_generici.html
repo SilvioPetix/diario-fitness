@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Grafici Generici{% endblock %}
+
+{% block content %}
+<h1>Grafici</h1>
+
+<!-- Etichette delle date -->
+{{ dateLabels|json_script:"dateLabels" }}
+
+<!-- Dati metriche -->
+{{ dati|json_script:"datiData" }}
+
+<!-- Canvas per ogni metrica -->
+{% for nome, valori in dati.items %}
+  <div class="mb-5" style="max-width:600px;">
+    <h3>{{ nome|capfirst }}</h3>
+    <canvas id="{{ nome }}Chart" width="600" height="300"></canvas>
+  </div>
+{% endfor %}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Recupera dati JSON dal DOM
+  const dateLabels = JSON.parse(document.getElementById('dateLabels').textContent);
+  const dati = JSON.parse(document.getElementById('datiData').textContent);
+  const metriche = Object.keys(dati);
+
+  // Funzione per creare grafico lineare
+  function createLineChart(ctx, label, data, borderColor, bgColor, yLabel) {
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dateLabels,
+        datasets: [{
+          label: label,
+          data: data,
+          borderColor: borderColor,
+          backgroundColor: bgColor,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4,
+          spanGaps: true // consente di unire i punti ignorando null
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Data' } },
+          y: { title: { display: true, text: yLabel }, beginAtZero: false }
+        }
+      }
+    });
+  }
+
+  // Genera colore pastello casuale
+  function coloreCasuale() {
+    const r = Math.floor(150 + Math.random() * 100);
+    const g = Math.floor(150 + Math.random() * 100);
+    const b = Math.floor(150 + Math.random() * 100);
+    return [`rgba(${r}, ${g}, ${b}, 1)`, `rgba(${r}, ${g}, ${b}, 0.2)`];
+  }
+
+  // Crea grafici per ogni metrica
+  metriche.forEach(nome => {
+    let data = dati[nome].map(v => (v === null ? NaN : v)); // sostituisci null con NaN per Chart.js
+    const ctx = document.getElementById(nome + "Chart").getContext('2d');
+    const [borderColor, bgColor] = coloreCasuale();
+    createLineChart(ctx, nome.charAt(0).toUpperCase() + nome.slice(1), data, borderColor, bgColor, "Valore");
+  });
+</script>
+
+{% endblock %}

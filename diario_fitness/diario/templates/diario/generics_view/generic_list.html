@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block title %}{{ titolo }}{% endblock %}
+
+{% block content %}
+<div class="card shadow p-4">
+    <h2 class="mb-4">{{ titolo }}</h2>
+
+    <form method="get" class="row g-3 mb-4">
+        {% for filtro in filtri %}
+        <div class="col-md-4">
+            <label for="{{ filtro.nome }}" class="form-label">{{ filtro.label }}</label>
+            <input 
+                type="{{ filtro.tipo }}" 
+                name="{{ filtro.nome }}" 
+                class="form-control" 
+                value="{{ request.GET|get_item:filtro.nome }}">
+        </div>
+        {% endfor %}
+        <div class="col-md-4 align-self-end">
+            <button type="submit" class="btn btn-primary">Filtra</button>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {% for col in colonne %}
+                <th>{{ col }}</th>
+                {% endfor %}
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in object_list %}
+            <tr>
+                {% for campo in campi %}
+                <td>{{ obj|get_attr:campo }}</td>
+                {% endfor %}
+                <td>
+                    <a href="{% url 'modifica_generica' tipo=tipo pk=obj.pk %}" class="text-warning me-2">✏️</a>
+                    <a href="{% url 'elimina_generica' tipo=tipo pk=obj.pk %}" class="text-danger">🗑️</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="{{ campi|length|add:'1' }}" class="text-center">Nessun elemento trovato.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'crea_generica' tipo=tipo %}" class="btn btn-success mt-3">Nuovo {{ tipo|capfirst }}</a>
+</div>
+{% endblock %}

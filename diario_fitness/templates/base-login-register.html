@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Login/Registrazione{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles-login-register.css' %}">
+</head>
+<body>
+    
+    <div class="container">
+        {% block content %}
+        <!-- Contenuto dinamico -->
+        {% endblock %}
+    </div>
+</body>
+</html>

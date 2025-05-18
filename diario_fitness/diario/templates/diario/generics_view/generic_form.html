@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ titolo }}{% endblock %}
+
+{% block content %}
+<div class="card shadow p-4">
+    <h2 class="mb-4">{{ titolo }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+            {{ field.label_tag }} {{ field }}
+            {% if field.errors %}
+                <div class="text-danger">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Salva</button>
+        <a href="{{ url_ritorno }}" class="btn btn-secondary">Annulla</a>
+    </form>
+</div>
+{% endblock %}

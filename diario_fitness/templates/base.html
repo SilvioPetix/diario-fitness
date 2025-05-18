@@ -112,22 +112,33 @@
                         </li>
                     
                         <li class="nav-item dropdown">
-  <a
-    class="nav-link dropdown-toggle"
-    href="#"
-    id="graficiDropdown"
-    role="button"
-    data-bs-toggle="dropdown"
-    aria-expanded="false"
-  >
-    Grafici
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                id="graficiDropdown"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                                        >
+                                    Grafici
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="graficiDropdown">
+                                <li><a class="dropdown-item" href="{% url 'grafici_generico' 'benessere' %}">Benessere</a></li>
+                                <li><a class="dropdown-item" href="{% url 'grafici_generico' 'indici' %}">Indici</a></li>
+                                <li><a class="dropdown-item" href="{% url 'grafici_generico' 'misurazioni' %}">Misurazioni</a></li>
+                        </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="exportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Esportazione
   </a>
-  <ul class="dropdown-menu" aria-labelledby="graficiDropdown">
-    <li><a class="dropdown-item" href="{% url 'grafici_generico' 'benessere' %}">Benessere</a></li>
-    <li><a class="dropdown-item" href="{% url 'grafici_generico' 'indici' %}">Indici</a></li>
-    <li><a class="dropdown-item" href="{% url 'grafici_generico' 'misurazioni' %}">Misurazioni</a></li>
+  <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+    <li><a class="dropdown-item" href="{% url 'export_data' %}">Dati (CSV / PDF)</a></li>
   </ul>
 </li>
+
+
 
                     </ul>
 

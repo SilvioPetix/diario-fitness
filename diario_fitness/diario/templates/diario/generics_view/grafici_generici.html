@@ -17,6 +17,7 @@
   <div class="mb-5" style="max-width:600px;">
     <h3>{{ nome|capfirst }}</h3>
     <canvas id="{{ nome }}Chart" width="600" height="300"></canvas>
+    <button class="export-btn" data-canvas-id="{{ nome }}Chart" data-tipo="{{ nome }}">Esporta in PDF</button>
   </div>
 {% endfor %}
 
@@ -71,6 +72,45 @@
     const [borderColor, bgColor] = coloreCasuale();
     createLineChart(ctx, nome.charAt(0).toUpperCase() + nome.slice(1), data, borderColor, bgColor, "Valore");
   });
+
+  document.querySelectorAll('.export-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const canvasId = this.dataset.canvasId;
+        const tipo = this.dataset.tipo;
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas) {
+            alert("Canvas non trovato!");
+            return;
+        }
+
+        const imageData = canvas.toDataURL("image/png");
+
+        fetch("{% url 'export_grafico_pdf' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({
+                image: imageData,
+                tipo: tipo
+            }),
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = tipo + "_grafico.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        });
+    });
+});
+
+
 </script>
 
 {% endblock %}
